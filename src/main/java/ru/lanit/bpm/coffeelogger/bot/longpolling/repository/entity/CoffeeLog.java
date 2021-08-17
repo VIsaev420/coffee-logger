@@ -1,4 +1,4 @@
-package ru.lanit.bpm.coffeelogger.bot.longpolling.coffee.entity;
+package ru.lanit.bpm.coffeelogger.bot.longpolling.repository.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
