@@ -16,10 +16,10 @@ public class CoffeeLoggerApplication {
         ApiContextInitializer.init();
         TelegramBotsApi botApi = new TelegramBotsApi();
         try {
+            SpringApplication.run(CoffeeLoggerApplication.class, args);
             botApi.registerBot(new Bot());
         } catch (TelegramApiRequestException e) {
             e.printStackTrace();
         }
-        SpringApplication.run(CoffeeLoggerApplication.class, args);
     }
 }
