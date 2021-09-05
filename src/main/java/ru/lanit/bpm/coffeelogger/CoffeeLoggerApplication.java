@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import ru.lanit.bpm.coffeelogger.bot.longpolling.Bot;
+import ru.lanit.bpm.coffeelogger.bot.longpolling.repository.OperatorRepository;
 
 @SpringBootApplication
 public class CoffeeLoggerApplication {
@@ -16,10 +16,12 @@ public class CoffeeLoggerApplication {
         ApiContextInitializer.init();
         TelegramBotsApi botApi = new TelegramBotsApi();
         try {
-            SpringApplication.run(CoffeeLoggerApplication.class, args);
             botApi.registerBot(new Bot());
         } catch (TelegramApiRequestException e) {
             e.printStackTrace();
         }
+
+        SpringApplication.run(CoffeeLoggerApplication.class, args);
+
     }
 }
