@@ -1,5 +1,6 @@
 package ru.lanit.bpm.coffeelogger.bot.longpolling;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -7,15 +8,18 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.lanit.bpm.coffeelogger.bot.longpolling.repository.OperatorRepository;
-import ru.lanit.bpm.coffeelogger.bot.longpolling.repository.entity.Operator;
+import ru.lanit.bpm.coffeelogger.bot.longpolling.persistance.adapter.CoffeeOrderAdapter;
+import ru.lanit.bpm.coffeelogger.bot.longpolling.persistance.adapter.OperatorAdapter;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class Bot extends TelegramLongPollingBot {
+    private final CoffeeOrderAdapter coffeeOrderAdapter;
+    private final OperatorAdapter operatorAdapter;
 
     @Override
     public String getBotUsername() {
@@ -24,7 +28,7 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public String getBotToken() {
-        return "test";
+        return "TOKEN";
     }
 
     @Override
@@ -33,11 +37,11 @@ public class Bot extends TelegramLongPollingBot {
             String incomingMessage = update.getMessage().getText();
             var chatId = update.getMessage().getChatId();
             SendMessage message = new SendMessage();
-            message.setChatId(chatId);
+            message.setChatId(chatId.toString());
             var delKeyboard = new ReplyKeyboardRemove();
 
             if (incomingMessage.equals("start")) {
-                message.setText("Скопируйте шаблон и заполните значения в {}:" +
+                message.setText("Скопируйте шаблон и заполните значения в <>:" +
                     "\n[CoffeeOrder]: CoffeeType: <>, CoffeeSize: <>, CoffeePrise: <>, CafeName: <>" +
                     "\nЕсли было взято, кроме кофе, то заполни следующий шаблон:" +
                     "\n[CoffeeAndCustomOrder] CoffeeName: {}, CoffeeType: {}, CoffeeSize: {}, CoffeePrise: {}, CafeName: {}, Цена допника: {}, Описание допника: {}");
@@ -46,29 +50,23 @@ public class Bot extends TelegramLongPollingBot {
                 var keysPattern = Pattern.compile("(\\s\\w*):");
                 var keysMatcher = keysPattern.matcher(incomingMessage);
 
-                var valuePattern = Pattern.compile("<(\\S*)>");
+                var valuePattern = Pattern.compile("<(.*?)>");
                 var valueMatcher = valuePattern.matcher(incomingMessage);
 
-                var keysMatches = new ArrayList<>();
-                var valueMatches = new ArrayList<>();
+                var coffeeOrder = new HashMap<String, String>();
 
-                while (keysMatcher.find()) {
-                    keysMatches.add(keysMatcher.group(1).trim());
+                while (keysMatcher.find() && valueMatcher.find()) {
+                    coffeeOrder.put(keysMatcher.group(1).trim(), valueMatcher.group(1));
                 }
-                while (valueMatcher.find()) {
-                    valueMatches.add(valueMatcher.group(1));
-                }
-                log.info("keys[{}], values[{}], first values={}", keysMatches, valueMatches, valueMatches.get(0));
 
-                var operator = new Operator();
-                operator.setId(update.getMessage().getFrom().getUserName());
-                operator.setName(update.getMessage().getFrom().getFirstName() + " " + update.getMessage().getFrom().getLastName());
-                OperatorSaver.save(operator);
+                var operatorInstance = operatorAdapter.createOperator(update.getMessage().getFrom().getFirstName() + " " + update.getMessage().getFrom().getLastName(),
+                    update.getMessage().getFrom().getUserName());
 
-                message.setText("see app logs");
+                var orderInstance = coffeeOrderAdapter.createOrder(coffeeOrder, operatorInstance);
 
+                message.setText("Запись создана");
             } else if (incomingMessage.startsWith("[CoffeeAndCustomOrder]")) {
-
+                message.setText("write custom order");
             } else {
                 message.setText("write start");
                 message.setReplyMarkup(delKeyboard);

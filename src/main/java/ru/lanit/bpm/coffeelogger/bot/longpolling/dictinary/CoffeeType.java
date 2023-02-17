@@ -3,7 +3,7 @@ package ru.lanit.bpm.coffeelogger.bot.longpolling.dictinary;
 import lombok.Getter;
 
 @Getter
-public enum CoffeeType implements Dictionary {
+public enum CoffeeType {
 
     ESPRESSO("Эспрессо"),
     AMERICANO("Американо"),

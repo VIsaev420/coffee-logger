@@ -5,7 +5,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import ru.lanit.bpm.coffeelogger.bot.longpolling.dictinary.Cafe;
-import ru.lanit.bpm.coffeelogger.bot.longpolling.dictinary.Dictionary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +23,10 @@ public class CreateKeyboardService {
         }
 
         keyboardRow_List.add(keyboardRow);
-        return new ReplyKeyboardMarkup().setResizeKeyboard(resizeKeyboard).setKeyboard(keyboardRow_List);
+
+        var keyboard = new ReplyKeyboardMarkup();
+        keyboard.setKeyboard(keyboardRow_List);
+        keyboard.setResizeKeyboard(resizeKeyboard);
+        return keyboard;
     }
 }

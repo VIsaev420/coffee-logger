@@ -3,9 +3,10 @@ package ru.lanit.bpm.coffeelogger.bot.longpolling.dictinary;
 import lombok.Getter;
 
 @Getter
-public enum Cafe implements Dictionary {
+public enum Cafe {
 
     SCURATOV("Скуратов"),
+    CP("Кофе поинт"),
     LIVE("Живой кофе"),
     SURF("Surf"),
     ART("Кафетериус"),

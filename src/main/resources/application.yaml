@@ -12,14 +12,3 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres
     username: admin
     password: admin
-
-management:
-  server:
-    port: 8080
-  endpoints:
-    web:
-      exposure:
-        include: health, info
-  metrics:
-    tags:
-      application: ${spring.application.name}
