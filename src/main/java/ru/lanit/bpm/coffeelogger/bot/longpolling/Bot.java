@@ -11,6 +11,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.lanit.bpm.coffeelogger.bot.longpolling.persistance.adapter.CoffeeOrderAdapter;
 import ru.lanit.bpm.coffeelogger.bot.longpolling.persistance.adapter.OperatorAdapter;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
@@ -28,7 +31,11 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public String getBotToken() {
-        return "TOKEN";
+        try {
+            return Files.readString(Path.of("bot_token.txt"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
