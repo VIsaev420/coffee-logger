@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.lanit.bpm.coffeelogger.bot.longpolling.persistance.repository.CoffeeOrderRepository;
 import ru.lanit.bpm.coffeelogger.bot.longpolling.persistance.entity.Coffee;
-import ru.lanit.bpm.coffeelogger.bot.longpolling.persistance.entity.Operator;
 
 import java.util.HashMap;
 
@@ -13,23 +12,26 @@ import java.util.HashMap;
 public class CoffeeOrderAdapter {
     private final CoffeeOrderRepository repository;
 
-    public Coffee createOrder(HashMap<String, String> coffeeOrder, Operator operator){
-        var coffee = new Coffee();
-        coffee.setCafe(coffeeOrder.get("CafeName"));
-        coffee.setType(coffeeOrder.get("CoffeeType"));
-        coffee.setPrice(Integer.parseInt(coffeeOrder.get("CoffeePrise")));
-        coffee.setSize(Float.parseFloat(coffeeOrder.get("CoffeeSize")));
-        coffee.setOperator(operator);
-
+    public void createOrder(HashMap<String, String> coffeeOrder, Long userId) {
+        var coffee = createCoffeeEntity(coffeeOrder, userId);
         save(coffee);
-        return coffee;
     }
 
     // ===================================================================================================================
     // = Implementation
     // ===================================================================================================================
 
-    private void save(Coffee coffeeOrder){
+    private void save(Coffee coffeeOrder) {
         repository.save(coffeeOrder);
+    }
+
+    private static Coffee createCoffeeEntity(HashMap<String, String> coffeeOrder, Long userId) {
+        var coffee = new Coffee();
+        coffee.setCafe(coffeeOrder.get("CafeName"));
+        coffee.setType(coffeeOrder.get("CoffeeType"));
+        coffee.setPrice(Integer.parseInt(coffeeOrder.get("CoffeePrise")));
+        coffee.setSize(Float.parseFloat(coffeeOrder.get("CoffeeSize")));
+        coffee.setUserId(userId);
+        return coffee;
     }
 }

@@ -24,9 +24,8 @@ public class Custom {
     private int price;
     @CreationTimestamp
     private LocalDateTime createDateTime;
-    @ManyToOne
-    @JoinColumn(name = "operator_id", referencedColumnName = "id", nullable = false)
-    private Operator operatorId;
+    @Basic
+    private Long userId;
     @OneToOne
     @JoinColumn(name = "coffee_order_id", referencedColumnName = "id")
     private Coffee coffeeOrder;

@@ -21,17 +21,13 @@ public class Coffee {
     @Basic
     private String type;
     @Basic
-    private float size;
+    private Float size;
     @Basic
     private String cafe;
     @Basic
-    private int price;
+    private Integer price;
     @CreationTimestamp
     private LocalDateTime createDateTime;
-    @ManyToOne
-    @JoinColumn(name = "operator_id", referencedColumnName = "id", nullable = false)
-    private Operator operator;
-    @OneToOne
-    @JoinColumn(name = "custom_order_id", referencedColumnName = "id")
-    private Custom customOrder;
+    @Basic
+    private Long userId;
 }
