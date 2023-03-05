@@ -28,8 +28,8 @@ public class CoffeeOrderAdapter {
     }
 
     public void repeatLastOrder(Long userId) {
-        var lastOrder = repository.findDistinctFirstByUserId(userId);
-        System.err.println(lastOrder.getCreateDateTime());
+        var lastOrder = repository.findTopByCreateDateTimeBeforeAndUserId(LocalDateTime.now(), userId);
+        repository.save(createCoffeeEntity(lastOrder));
     }
 
     // ===================================================================================================================
@@ -44,6 +44,15 @@ public class CoffeeOrderAdapter {
         coffee.setSize(Float.parseFloat(coffeeOrder.get("CoffeeSize")));
         coffee.setUserId(userId);
         return coffee;
+    }
+
+    private static Coffee createCoffeeEntity(Coffee oldEntity) {
+        var newEntity = new Coffee();
+        newEntity.setType(oldEntity.getType());
+        newEntity.setSize(oldEntity.getSize());
+        newEntity.setPrice(oldEntity.getPrice());
+        newEntity.setCafe(oldEntity.getCafe());
+        return newEntity;
     }
 
     private LocalDateTime computeAfterDate(Long daysCount) {

@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface CoffeeOrderRepository extends JpaRepository<Coffee, String> {
     List<Coffee> findCoffeesByUserIdAndCreateDateTimeAfter(Long userId, LocalDateTime createDateTime);
-    Coffee findDistinctFirstByUserId(Long userId);
+    Coffee findTopByCreateDateTimeBeforeAndUserId(LocalDateTime createDateTime, Long userId);
 }
