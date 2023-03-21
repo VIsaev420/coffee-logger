@@ -52,6 +52,7 @@ public class CoffeeOrderAdapter {
         newEntity.setSize(oldEntity.getSize());
         newEntity.setPrice(oldEntity.getPrice());
         newEntity.setCafe(oldEntity.getCafe());
+        newEntity.setUserId(oldEntity.getUserId());
         return newEntity;
     }
 
