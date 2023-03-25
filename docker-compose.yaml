@@ -1,13 +1,14 @@
 ---
 version: '3.1'
 services:
-#  coffeelogger:
-#    build:
-#      dockerfile: Dockerfile
-#    ports:
-#    - 9999:90
-#    secrets:
-#    - token_id
+  app:
+    build: .
+    ports:
+      - 8080:8080
+    environment:
+      - "SPRING_PROFILES_ACTIVE=prod"
+    depends_on:
+      - pg_db
 
   pg_db:
     image: postgres:11.4
@@ -19,15 +20,3 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: postgres
-
-  pg_admin:
-    image: dpage/pgadmin4
-    ports:
-    - 9080:80
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@mail.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-
-secrets:
-  token_id:
-    file: ./bot_token.txt

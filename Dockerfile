@@ -1,5 +1,6 @@
-FROM registry.access.redhat.com/openjdk/openjdk-11-rhel7:1.0-16.1567588131
-ENV LC_ALL en_US.UTF-8
-ENV LANG en_US.UTF-8
+FROM openjdk:11
+ENV OPTIONS -Dspring.profiles.active=prod
 COPY target/coffee-logger.jar coffee-logger.jar
-ENTRYPOINT exec java $JAVA_OPTS $OPTIONS -jar coffee-logger.jar
+COPY bot_token.txt bot_token.txt
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "coffee-logger.jar"]
