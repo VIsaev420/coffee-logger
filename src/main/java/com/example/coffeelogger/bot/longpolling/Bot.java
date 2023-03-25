@@ -1,13 +1,22 @@
-package ru.lanit.bpm.coffeelogger.bot.longpolling;
+package com.example.coffeelogger.bot.longpolling;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import com.example.coffeelogger.bot.longpolling.service.BotService;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Slf4j
+@Component
+@RequiredArgsConstructor
 public class Bot extends TelegramLongPollingBot {
+    private final BotService botService;
 
     @Override
     public String getBotUsername() {
@@ -16,17 +25,19 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public String getBotToken() {
-        return "test";
+        try {
+            return Files.readString(Path.of("bot_token.txt"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
-            String incomingMessage = update.getMessage().getText();
-            var chatId = update.getMessage().getChatId();
-            SendMessage message = new SendMessage(chatId.toString(),"asd");
+            var responseMessage = botService.handleMessage(update);
             try {
-                this.execute(message);
+                this.execute(responseMessage);
             } catch (TelegramApiException ex) {
                 log.error(ex.getMessage(), ex);
             }

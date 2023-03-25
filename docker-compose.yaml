@@ -1,0 +1,22 @@
+---
+version: '3.1'
+services:
+  app:
+    build: .
+    ports:
+      - 8080:8080
+    environment:
+      - "SPRING_PROFILES_ACTIVE=prod"
+    depends_on:
+      - pg_db
+
+  pg_db:
+    image: postgres:11.4
+    hostname: postgresql
+    restart: always
+    ports:
+    - 5432:5432
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
