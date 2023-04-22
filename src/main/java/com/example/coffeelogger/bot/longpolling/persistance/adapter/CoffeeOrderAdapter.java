@@ -28,7 +28,7 @@ public class CoffeeOrderAdapter {
     }
 
     public void repeatLastOrder(Long userId) {
-        var lastOrder = repository.findTopByCreateDateTimeBeforeAndUserId(LocalDateTime.now(), userId);
+        var lastOrder = repository.findFirstByCreateDateTimeBeforeAndUserIdOrderByCreateDateTimeDesc(LocalDateTime.now(), userId);
         repository.save(createCoffeeEntity(lastOrder));
     }
 
